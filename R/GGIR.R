@@ -503,4 +503,10 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
     }
   }
+  if (isTRUE(params_output[["save_dashboard_parquet"]])) {
+    if (verbose == TRUE) print_console_header("Dashboard Parquet export")
+    write_dashboard_parquet(metadatadir = metadatadir,
+                            params_output = params_output,
+                            verbose = verbose)
+  }
 }
