@@ -1,5 +1,7 @@
 write_dashboard_parquet = function(metadatadir = c(),
                                    params_output = c(),
+                                   params_general = c(),
+                                   params_phyact = c(),
                                    verbose = TRUE) {
   # Produce a single consolidated Parquet file from the CSV reports
 
@@ -154,7 +156,29 @@ write_dashboard_parquet = function(metadatadir = c(),
   }
 
   # ---------------------------------------------------------------
-  # 8. Clean column names for SQL-friendly access
+  # 8. Attach nested epoch-level time series as list-column
+  #    (must happen before clean_colnames so join keys match)
+  # ---------------------------------------------------------------
+  epoch_by_day = tryCatch(
+    build_epoch_lists_by_day(metadatadir = metadatadir,
+                             params_general = params_general,
+                             params_phyact = params_phyact,
+                             results_dir = results_dir,
+                             verbose = verbose),
+    error = function(e) NULL
+  )
+  if (!is.null(epoch_by_day) && nrow(epoch_by_day) > 0) {
+    join_keys = intersect(c("ID", "calendar_date"), names(consolidated))
+    if (all(c("ID", "calendar_date") %in% join_keys) &&
+        all(c("ID", "calendar_date") %in% names(epoch_by_day))) {
+      consolidated = merge(consolidated, epoch_by_day,
+                           by = c("ID", "calendar_date"),
+                           all.x = TRUE, sort = FALSE)
+    }
+  }
+
+  # ---------------------------------------------------------------
+  # 9. Clean column names for SQL-friendly access
   # ---------------------------------------------------------------
   names(consolidated) = clean_colnames(names(consolidated))
 
@@ -166,7 +190,7 @@ write_dashboard_parquet = function(metadatadir = c(),
   }
 
   # ---------------------------------------------------------------
-  # 9. Cast types for Parquet
+  # 10. Cast types for Parquet
   # ---------------------------------------------------------------
 
   # calendar_date -> Date
@@ -204,10 +228,10 @@ write_dashboard_parquet = function(metadatadir = c(),
   }
 
   # ---------------------------------------------------------------
-  # 10. Build Parquet key-value metadata from dictionary
+  # 11. Build Parquet key-value metadata from dictionary
   # ---------------------------------------------------------------
   kv_metadata = list(
-    ggir_export = "consolidated_dashboard",
+    ggir_export = "nested_dashboard",
     created_at = as.character(Sys.time())
   )
   if (!is.null(dict) && nrow(dict) > 0 &&
@@ -219,7 +243,67 @@ write_dashboard_parquet = function(metadatadir = c(),
   }
 
   # ---------------------------------------------------------------
-  # 11. Write Parquet file
+  # 11b. Embed behavioral codes (class_id <-> class_name mapping)
+  # ---------------------------------------------------------------
+  ms5_root = paste0(metadatadir, "/meta/ms5.outraw")
+  if (dir.exists(ms5_root)) {
+    bc_files = list.files(ms5_root, pattern = "^behavioralcodes.*\\.csv$",
+                          full.names = TRUE)
+    if (length(bc_files) > 0) {
+      bc = tryCatch(
+        data.table::fread(bc_files[length(bc_files)], data.table = FALSE),
+        error = function(e) NULL
+      )
+      if (!is.null(bc) && nrow(bc) > 0 &&
+          all(c("class_name", "class_id") %in% names(bc))) {
+        bc_json = paste0("{",
+          paste(vapply(seq_len(nrow(bc)), function(i) {
+            paste0("\"", bc$class_id[i], "\":\"", bc$class_name[i], "\"")
+          }, character(1)), collapse = ","),
+        "}")
+        kv_metadata[["behavioral_codes"]] = bc_json
+      }
+    }
+  }
+
+  # ---------------------------------------------------------------
+  # 11c. Embed threshold configuration and acc metric
+  # ---------------------------------------------------------------
+  threshold_lig = params_phyact[["threshold.lig"]]
+  threshold_mod = params_phyact[["threshold.mod"]]
+  threshold_vig = params_phyact[["threshold.vig"]]
+  if (!is.null(threshold_lig)) {
+    kv_metadata[["threshold_lig"]] = as.character(threshold_lig)
+  }
+  if (!is.null(threshold_mod)) {
+    kv_metadata[["threshold_mod"]] = as.character(threshold_mod)
+  }
+  if (!is.null(threshold_vig)) {
+    kv_metadata[["threshold_vig"]] = as.character(threshold_vig)
+  }
+  if (!is.null(params_phyact[["part6_threshold_combi"]])) {
+    kv_metadata[["threshold_combi"]] = params_phyact[["part6_threshold_combi"]]
+  }
+  if (!is.null(params_general[["acc.metric"]])) {
+    kv_metadata[["acc_metric"]] = params_general[["acc.metric"]]
+  }
+
+  # Estimate epoch length from the nested epoch time series
+  if (!is.null(epoch_by_day) && nrow(epoch_by_day) > 0 &&
+      "epochs" %in% names(epoch_by_day)) {
+    first_epoch = epoch_by_day$epochs[[1]]
+    if (!is.null(first_epoch) && is.data.frame(first_epoch) &&
+        nrow(first_epoch) > 1 && "timenum" %in% names(first_epoch)) {
+      diffs = diff(first_epoch$timenum[1:min(nrow(first_epoch), 100)])
+      diffs = diffs[is.finite(diffs) & diffs > 0]
+      if (length(diffs) > 0) {
+        kv_metadata[["epoch_length_seconds"]] = as.character(stats::median(diffs))
+      }
+    }
+  }
+
+  # ---------------------------------------------------------------
+  # 12. Write Parquet file
   # ---------------------------------------------------------------
   parquet_path = paste0(results_dir, "/ggir_results.parquet")
 
@@ -236,4 +320,528 @@ write_dashboard_parquet = function(metadatadir = c(),
   }
 
   invisible(parquet_path)
+}
+
+build_epoch_table = function(metadatadir = c(),
+                              params_general = c(),
+                              params_phyact = c(),
+                              results_dir = NULL,
+                              verbose = TRUE) {
+  # Build a flat epoch-level data.frame from ms5.outraw time series.
+  #
+  # Returns a list with:
+  #   epoch_df   - data.frame with one row per epoch, including ID, filename,
+  #                timenum, ACC, SleepPeriodTime, invalidepoch, class_id,
+  #                guider, window, calendar_date, and weekday.
+  #   config_name - basename of the ms5.outraw configuration used.
+  # Returns NULL if no usable data is found.
+
+  if (is.null(results_dir) || !length(results_dir)) {
+    results_dir = paste0(metadatadir, "/results")
+  }
+
+  ms5_root = paste0(metadatadir, "/meta/ms5.outraw")
+  if (!dir.exists(ms5_root)) {
+    if (verbose) warning("\nNo ms5.outraw directory found. Cannot build epoch table.", call. = FALSE)
+    return(NULL)
+  }
+
+  # Determine which ms5.outraw configuration folder to use
+  config_dir = character(0)
+  if (!is.null(params_phyact[["part6_threshold_combi"]]) &&
+      length(params_phyact[["part6_threshold_combi"]]) > 0 &&
+      nchar(params_phyact[["part6_threshold_combi"]][1]) > 0) {
+    cfg_name = params_phyact[["part6_threshold_combi"]][1]
+    cfg_path = paste0(ms5_root, "/", cfg_name)
+    if (dir.exists(cfg_path)) {
+      config_dir = cfg_path
+    }
+  }
+  if (!length(config_dir)) {
+    subdirs = list.dirs(ms5_root, recursive = FALSE, full.names = TRUE)
+    if (length(subdirs) > 0) {
+      has_ts = vapply(
+        subdirs,
+        function(d) {
+          any(file.exists(list.files(d, pattern = "\\.(csv|RData)$", full.names = TRUE)))
+        },
+        logical(1)
+      )
+      subdirs = subdirs[has_ts]
+    }
+    if (length(subdirs) > 0) {
+      config_dir = subdirs[1]
+      if (verbose) {
+        cat(paste0("\n  Using ms5.outraw configuration: ", basename(config_dir)))
+      }
+    }
+  }
+  if (!length(config_dir) || !dir.exists(config_dir)) {
+    if (verbose) warning("\nNo ms5.outraw configuration with time series found.", call. = FALSE)
+    return(NULL)
+  }
+
+  # Prefer CSV over RData when both are available
+  csv_files = list.files(config_dir, pattern = "[.]csv$", full.names = TRUE)
+  rda_files = list.files(config_dir, pattern = "[.]RData$", full.names = TRUE)
+  files = if (length(csv_files) > 0) csv_files else rda_files
+  if (length(files) == 0) {
+    if (verbose) warning("\nNo ms5.outraw time series files found in configuration folder.", call. = FALSE)
+    return(NULL)
+  }
+
+  # Map filename -> ID from part2_summary.csv if available
+  id_map = NULL
+  p2_file = paste0(results_dir, "/part2_summary.csv")
+  if (file.exists(p2_file)) {
+    p2 = tryCatch(
+      data.table::fread(p2_file, data.table = FALSE),
+      error = function(e) NULL
+    )
+    if (!is.null(p2) && all(c("filename", "ID") %in% names(p2))) {
+      id_map = unique(p2[, c("filename", "ID")])
+    }
+  }
+
+  desiredtz_global = ""
+  if (!is.null(params_general[["desiredtz"]])) desiredtz_global = params_general[["desiredtz"]]
+
+  epoch_list = vector("list", length(files))
+
+  for (i in seq_along(files)) {
+    f = files[i]
+    df = NULL
+    filename_val = NA_character_
+    tz_file = desiredtz_global
+
+    if (grepl("[.]csv$", f, ignore.case = TRUE)) {
+      df = tryCatch(
+        data.table::fread(f, data.table = FALSE),
+        error = function(e) {
+          if (verbose) warning(paste0("\nCould not read ms5 CSV: ", f, " - ", e$message), call. = FALSE)
+          NULL
+        }
+      )
+    } else {
+      env = new.env()
+      ok = tryCatch(
+        {
+          load(f, envir = env)
+          TRUE
+        },
+        error = function(e) {
+          if (verbose) warning(paste0("\nCould not load ms5 RData: ", f, " - ", e$message), call. = FALSE)
+          FALSE
+        }
+      )
+      if (ok && exists("mdat", envir = env, inherits = FALSE)) {
+        df = get("mdat", envir = env)
+      }
+      if (exists("desiredtz_part1", envir = env, inherits = FALSE)) {
+        tz_candidate = get("desiredtz_part1", envir = env)
+        if (!is.null(tz_candidate) && nchar(tz_candidate) > 0) {
+          tz_file = tz_candidate
+        }
+      }
+      if (exists("filename", envir = env, inherits = FALSE)) {
+        filename_val = as.character(get("filename", envir = env))
+      }
+    }
+
+    if (is.null(df) || nrow(df) == 0) next
+    if (!("timenum" %in% names(df))) next
+
+    # Derive filename if not present on data
+    if ("filename" %in% names(df)) {
+      filename_val = as.character(df$filename[1])
+    } else {
+      if (is.na(filename_val)) {
+        filename_val = basename(f)
+      }
+      df$filename = filename_val
+    }
+
+    # Attach ID via filename if mapping is available
+    if (!("ID" %in% names(df)) && !is.null(id_map) && !is.na(filename_val)) {
+      id_match = id_map[id_map$filename == filename_val, , drop = FALSE]
+      if (nrow(id_match) > 0) {
+        df$ID = id_match$ID[1]
+      }
+    }
+
+    # Derive calendar_date and weekday from timenum and timezone
+    if (is.null(tz_file) || nchar(tz_file) == 0) tz_file = "UTC"
+    ts_posix = tryCatch(
+      as.POSIXct(df$timenum, origin = "1970-01-01", tz = tz_file),
+      error = function(e) NULL
+    )
+    if (!is.null(ts_posix)) {
+      df$calendar_date = as.Date(ts_posix)
+      df$weekday = weekdays(ts_posix)
+    }
+
+    epoch_list[[i]] = df
+  }
+
+  epoch_list = epoch_list[!vapply(epoch_list, is.null, logical(1))]
+  if (length(epoch_list) == 0) {
+    if (verbose) warning("\nNo valid epoch-level time series found.", call. = FALSE)
+    return(NULL)
+  }
+
+  # Enforce consistent column set across recordings (fill missing with NA)
+  all_cols = unique(unlist(lapply(epoch_list, names)))
+  epoch_list = lapply(epoch_list, function(df) {
+    missing = setdiff(all_cols, names(df))
+    for (col in missing) df[[col]] = NA
+    df[, all_cols, drop = FALSE]
+  })
+
+  epoch_df = do.call(rbind, epoch_list)
+
+  list(epoch_df = epoch_df, config_name = basename(config_dir))
+}
+
+write_epoch_parquet = function(metadatadir = c(),
+                               params_output = c(),
+                               params_general = c(),
+                               params_phyact = c(),
+                               verbose = TRUE) {
+  # Produce an epoch-level Parquet file from the ms5.outraw time series.
+  # The resulting table is flat with one row per epoch.
+
+  results_dir = paste0(metadatadir, "/results")
+  if (!dir.exists(results_dir)) {
+    warning("\nNo results directory found. Skipping epoch Parquet export.", call. = FALSE)
+    return(invisible(NULL))
+  }
+
+  result = build_epoch_table(metadatadir = metadatadir,
+                              params_general = params_general,
+                              params_phyact = params_phyact,
+                              results_dir = results_dir,
+                              verbose = verbose)
+  if (is.null(result)) {
+    return(invisible(NULL))
+  }
+
+  epoch_df = result$epoch_df
+  config_name = result$config_name
+
+  # ---------------------------------------------------------------
+  # Type coercions
+  # ---------------------------------------------------------------
+  if ("calendar_date" %in% names(epoch_df)) {
+    epoch_df$calendar_date = as.Date(epoch_df$calendar_date)
+  }
+
+  bool_cols = c("SleepPeriodTime", "invalidepoch")
+  for (col in bool_cols) {
+    if (col %in% names(epoch_df)) {
+      epoch_df[[col]] = as.logical(epoch_df[[col]])
+    }
+  }
+
+  int_cols = c("class_id", "window", "guider")
+  for (col in int_cols) {
+    if (col %in% names(epoch_df)) {
+      epoch_df[[col]] = tryCatch(
+        as.integer(epoch_df[[col]]),
+        warning = function(w) epoch_df[[col]],
+        error = function(e) epoch_df[[col]]
+      )
+    }
+  }
+
+  # ---------------------------------------------------------------
+  # Build Arrow table and attach Parquet key-value metadata
+  # ---------------------------------------------------------------
+  parquet_path = paste0(results_dir, "/ggir_epochs.parquet")
+
+  tbl = arrow::arrow_table(epoch_df)
+
+  kv_metadata = list(
+    ggir_export = "epoch_timeseries",
+    created_at = as.character(Sys.time()),
+    ms5_configuration = config_name
+  )
+
+  if (!is.null(params_general[["acc.metric"]])) {
+    kv_metadata[["acc_metric"]] = params_general[["acc.metric"]]
+  }
+
+  # Estimate epoch length (in seconds) from timenum differences
+  if ("timenum" %in% names(epoch_df)) {
+    ord = order(epoch_df$timenum)
+    max_n = min(length(ord), 1001L)
+    if (max_n > 1L) {
+      diffs = diff(epoch_df$timenum[ord][seq_len(max_n)])
+      diffs = diffs[is.finite(diffs) & diffs > 0]
+      if (length(diffs) > 0) {
+        epoch_len = stats::median(diffs)
+        kv_metadata[["epoch_length_seconds"]] = as.character(epoch_len)
+      }
+    }
+  }
+
+  tbl$metadata = kv_metadata
+
+  arrow::write_parquet(tbl, parquet_path)
+
+  if (verbose) {
+    cat(paste0("\n  Epoch Parquet file written: ", parquet_path))
+    cat(paste0("\n  Rows: ", nrow(epoch_df),
+               ", Columns: ", ncol(epoch_df), "\n"))
+  }
+
+  invisible(parquet_path)
+}
+
+build_epoch_lists_by_day = function(metadatadir = c(),
+                                    params_general = c(),
+                                    params_phyact = c(),
+                                    results_dir = c(),
+                                    verbose = TRUE) {
+  # Helper to construct a per-day list-column of epoch-level time series
+  # from ms5.outraw time series. Returns a data.frame with columns:
+  #   ID, calendar_date, epochs (list of data.frames).
+
+  if (!length(results_dir)) {
+    results_dir = paste0(metadatadir, "/results")
+  }
+  ms5_root = paste0(metadatadir, "/meta/ms5.outraw")
+  if (!dir.exists(ms5_root)) {
+    if (verbose == TRUE) {
+      warning("\nNo ms5.outraw directory found. Cannot build epoch lists.", call. = FALSE)
+    }
+    return(NULL)
+  }
+
+  # Determine which ms5.outraw configuration folder to use
+  config_dir = character(0)
+  if (!is.null(params_phyact[["part6_threshold_combi"]]) &&
+      length(params_phyact[["part6_threshold_combi"]]) > 0 &&
+      nchar(params_phyact[["part6_threshold_combi"]][1]) > 0) {
+    cfg_name = params_phyact[["part6_threshold_combi"]][1]
+    cfg_path = paste0(ms5_root, "/", cfg_name)
+    if (dir.exists(cfg_path)) {
+      config_dir = cfg_path
+    }
+  }
+  if (!length(config_dir)) {
+    subdirs = list.dirs(ms5_root, recursive = FALSE, full.names = TRUE)
+    if (length(subdirs) > 0) {
+      has_ts = vapply(
+        subdirs,
+        function(d) {
+          any(file.exists(list.files(d, pattern = "\\.(csv|RData)$", full.names = TRUE)))
+        },
+        logical(1)
+      )
+      subdirs = subdirs[has_ts]
+    }
+    if (length(subdirs) > 0) {
+      config_dir = subdirs[1]
+      if (verbose == TRUE) {
+        cat(paste0("\n  Using ms5.outraw configuration for nesting: ", basename(config_dir)))
+      }
+    }
+  }
+  if (!length(config_dir) || !dir.exists(config_dir)) {
+    if (verbose == TRUE) {
+      warning("\nNo ms5.outraw configuration with time series found. Cannot build epoch lists.", call. = FALSE)
+    }
+    return(NULL)
+  }
+
+  # Prefer CSV over RData when both are available
+  csv_files = list.files(config_dir, pattern = "[.]csv$", full.names = TRUE)
+  rda_files = list.files(config_dir, pattern = "[.]RData$", full.names = TRUE)
+  files = if (length(csv_files) > 0) csv_files else rda_files
+  if (length(files) == 0) {
+    if (verbose == TRUE) {
+      warning("\nNo ms5.outraw time series files found in configuration folder. Cannot build epoch lists.", call. = FALSE)
+    }
+    return(NULL)
+  }
+
+  # Map filename -> ID from part2_summary.csv if available
+  id_map = NULL
+  p2_file = paste0(results_dir, "/part2_summary.csv")
+  if (file.exists(p2_file)) {
+    p2 = tryCatch(
+      data.table::fread(p2_file, data.table = FALSE),
+      error = function(e) NULL
+    )
+    if (!is.null(p2) && all(c("filename", "ID") %in% names(p2))) {
+      id_map = unique(p2[, c("filename", "ID")])
+    }
+  }
+
+  desiredtz_global = ""
+  if (!is.null(params_general[["desiredtz"]])) desiredtz_global = params_general[["desiredtz"]]
+
+  epoch_list = vector("list", length(files))
+
+  for (i in seq_along(files)) {
+    f = files[i]
+    df = NULL
+    filename_val = NA_character_
+    tz_file = desiredtz_global
+
+    if (grepl("[.]csv$", f, ignore.case = TRUE)) {
+      df = tryCatch(
+        data.table::fread(f, data.table = FALSE),
+        error = function(e) {
+          if (verbose == TRUE) warning(paste0("\nCould not read ms5 CSV: ", f, " - ", e$message), call. = FALSE)
+          NULL
+        }
+      )
+    } else {
+      env = new.env()
+      ok = tryCatch(
+        {
+          load(f, envir = env)
+          TRUE
+        },
+        error = function(e) {
+          if (verbose == TRUE) warning(paste0("\nCould not load ms5 RData: ", f, " - ", e$message), call. = FALSE)
+          FALSE
+        }
+      )
+      if (ok && exists("mdat", envir = env, inherits = FALSE)) {
+        df = get("mdat", envir = env)
+      }
+      if (exists("desiredtz_part1", envir = env, inherits = FALSE)) {
+        tz_candidate = get("desiredtz_part1", envir = env)
+        if (!is.null(tz_candidate) && nchar(tz_candidate) > 0) {
+          tz_file = tz_candidate
+        }
+      }
+      if (exists("filename", envir = env, inherits = FALSE)) {
+        filename_val = as.character(get("filename", envir = env))
+      }
+    }
+
+    if (is.null(df) || nrow(df) == 0) next
+    if (!("timenum" %in% names(df))) next
+
+    # Ensure filename column
+    if ("filename" %in% names(df)) {
+      filename_val = as.character(df$filename[1])
+    } else {
+      if (is.na(filename_val)) {
+        filename_val = basename(f)
+      }
+      df$filename = filename_val
+    }
+
+    # Attach ID via filename if mapping is available
+    if (!("ID" %in% names(df)) && !is.null(id_map) && !is.na(filename_val)) {
+      id_match = id_map[id_map$filename == filename_val, , drop = FALSE]
+      if (nrow(id_match) > 0) {
+        df$ID = id_match$ID[1]
+      }
+    }
+
+    # Derive calendar_date from timenum and timezone
+    if (is.null(tz_file) || nchar(tz_file) == 0) tz_file = "UTC"
+    ts_posix = tryCatch(
+      as.POSIXct(df$timenum, origin = "1970-01-01", tz = tz_file),
+      error = function(e) NULL
+    )
+    if (!is.null(ts_posix)) {
+      df$calendar_date = as.Date(ts_posix)
+    }
+
+    epoch_list[[i]] = df
+  }
+
+  epoch_list = epoch_list[!vapply(epoch_list, is.null, logical(1))]
+  if (length(epoch_list) == 0) {
+    if (verbose == TRUE) {
+      warning("\nNo valid epoch-level time series found for nesting.", call. = FALSE)
+    }
+    return(NULL)
+  }
+
+  epoch_df = do.call(rbind, epoch_list)
+
+  # Ensure join keys and ordering columns exist
+  if (!all(c("ID", "calendar_date", "timenum") %in% names(epoch_df))) {
+    if (verbose == TRUE) {
+      warning("\nEpoch data lacks ID, calendar_date or timenum. Cannot build nested epochs.", call. = FALSE)
+    }
+    return(NULL)
+  }
+
+  # Decide optional fields globally
+  has_acc = "ACC" %in% names(epoch_df)
+  has_anglez = "anglez" %in% names(epoch_df)
+  has_lux = "lux" %in% names(epoch_df)
+  has_temperature = "temperature" %in% names(epoch_df)
+  has_steps = "steps" %in% names(epoch_df)
+  has_sibdetection = "sibdetection" %in% names(epoch_df)
+  has_guider = "guider" %in% names(epoch_df)
+
+  keys = unique(epoch_df[, c("ID", "calendar_date")])
+  keys = keys[order(keys$ID, keys$calendar_date), , drop = FALSE]
+  epochs_col = vector("list", nrow(keys))
+
+  for (i in seq_len(nrow(keys))) {
+    sel = which(epoch_df$ID == keys$ID[i] &
+                  epoch_df$calendar_date == keys$calendar_date[i])
+    sub = epoch_df[sel, , drop = FALSE]
+    if (nrow(sub) == 0) {
+      epochs_col[[i]] = data.frame()
+      next
+    }
+    sub = sub[order(sub$timenum), , drop = FALSE]
+
+    acc_col = if (has_acc) as.numeric(sub$ACC) else rep(NA_real_, nrow(sub))
+    class_col = if ("class_id" %in% names(sub)) as.integer(sub$class_id) else rep(NA_integer_, nrow(sub))
+    spt_col = if ("SleepPeriodTime" %in% names(sub)) as.logical(sub$SleepPeriodTime) else rep(NA, nrow(sub))
+    invalid_col = if ("invalidepoch" %in% names(sub)) as.logical(sub$invalidepoch) else rep(NA, nrow(sub))
+    window_col = if ("window" %in% names(sub)) as.integer(sub$window) else rep(NA_integer_, nrow(sub))
+
+    struct_df = data.frame(
+      timenum = as.numeric(sub$timenum),
+      acc = acc_col,
+      class_id = class_col,
+      spt = spt_col,
+      invalid = invalid_col,
+      window = window_col
+    )
+
+    if (has_anglez) {
+      anglez_col = if ("anglez" %in% names(sub)) as.numeric(sub$anglez) else rep(NA_real_, nrow(sub))
+      struct_df$anglez = anglez_col
+    }
+    if (has_lux) {
+      lux_col = if ("lux" %in% names(sub)) as.numeric(sub$lux) else rep(NA_real_, nrow(sub))
+      struct_df$lux = lux_col
+    }
+    if (has_temperature) {
+      temp_col = if ("temperature" %in% names(sub)) as.numeric(sub$temperature) else rep(NA_real_, nrow(sub))
+      struct_df$temperature = temp_col
+    }
+    if (has_steps) {
+      steps_col = if ("steps" %in% names(sub)) as.integer(sub$steps) else rep(NA_integer_, nrow(sub))
+      struct_df$steps = steps_col
+    }
+    if (has_sibdetection) {
+      sib_col = if ("sibdetection" %in% names(sub)) as.integer(sub$sibdetection) else rep(NA_integer_, nrow(sub))
+      struct_df$sibdetection = sib_col
+    }
+    if (has_guider) {
+      guider_col = if ("guider" %in% names(sub)) as.integer(sub$guider) else rep(NA_integer_, nrow(sub))
+      struct_df$guider = guider_col
+    }
+
+    epochs_col[[i]] = struct_df
+  }
+
+  out = keys
+  out$epochs = epochs_col
+  out
 }

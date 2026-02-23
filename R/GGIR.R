@@ -507,6 +507,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     if (verbose == TRUE) print_console_header("Dashboard Parquet export")
     write_dashboard_parquet(metadatadir = metadatadir,
                             params_output = params_output,
+                            params_general = params_general,
+                            params_phyact = params_phyact,
                             verbose = verbose)
   }
 }
