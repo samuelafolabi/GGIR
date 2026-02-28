@@ -1,0 +1,4 @@
+myfork	https://github.com/samuelafolabi/GGIR.git (fetch)
+myfork	https://github.com/samuelafolabi/GGIR.git (push)
+origin	https://github.com/wadpac/GGIR.git (fetch)
+origin	https://github.com/wadpac/GGIR.git (push)
