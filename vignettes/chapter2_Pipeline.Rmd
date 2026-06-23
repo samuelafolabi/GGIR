@@ -27,11 +27,11 @@ knitr::opts_chunk$set(
 
 **Prerequisites**
 
-- Read the previous chapter: [Chapter 1 — What is GGIR?](chapter1_WhatIsGGIR.html)
+- Read the previous chapter: [Chapter 1: What is GGIR?](chapter1_WhatIsGGIR.html)
 
 
 **Key terms:** <abbr title="Intermediate RData files saved between GGIR pipeline parts to allow resuming without re-running earlier steps">milestone data</abbr>, <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised into a metric value">epoch</abbr>, <abbr title="Acceleration data stored in gravitational units at the native sampling rate of the sensor">raw accelerometer data</abbr>, <abbr title="The six sequential computational stages of the GGIR pipeline (parts 1–6)">Parts (GGIR pipeline)</abbr>, <abbr title="Time periods when the accelerometer was not worn, detected via standard deviation and range of the raw signal over 60-minute windows">non-wear</abbr>
-— see the [full Glossary](Glossary.html) for all definitions.
+– see the [full Glossary](Glossary.html) for all definitions.
 
 </div>
 
@@ -471,7 +471,7 @@ The GGIR pipeline consists of six sequential parts. A single `GGIR()` call with 
 
 ### What to read next
 
-➡ [Chapter 3 — Data Quality Assurance](chapter3_QualityAssessment.html)
+➡ [Chapter 3: Data Quality Assurance](chapter3_QualityAssessment.html)
 
 ### Related materials
 

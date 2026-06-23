@@ -32,8 +32,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 **Prerequisites**
 
-- R and RStudio installed — see [Installation](chapter0_Installation.html)
-- 📹 [Stuart Fairclough — GGIR video tutorial playlist](https://www.youtube.com/watch?v=AbHgJYTyuiA)
+- R and RStudio installed – see [Installation](chapter0_Installation.html)
+- 📹 [Stuart Fairclough: GGIR video tutorial playlist](https://www.youtube.com/watch?v=AbHgJYTyuiA)
 
 </div>
 
@@ -84,12 +84,12 @@ You have seen the minimal GGIR call and where to go next. The documentation chap
 
 ### What to read next
 
-➡ [Chapter 1 — What is GGIR?](chapter1_WhatIsGGIR.html)
+➡ [Chapter 1: What is GGIR?](chapter1_WhatIsGGIR.html)
 
 ### Related materials
 
 - 📄 [GGIR Parameters reference](GGIRParameters.html)
-- 📄 [Cookbook — common recipes](Cookbook.html)
+- 📄 [Cookbook: common recipes](Cookbook.html)
 <br>
 <p><em>Video tutorial by Prof. Stuart Fairclough</em></p>
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 4px; margin-bottom: 1.5rem;">

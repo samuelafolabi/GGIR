@@ -29,11 +29,11 @@ knitr::opts_chunk$set(
 
 **Prerequisites**
 
-- Read the previous chapter: [Chapter 4 — From Raw Data to Acceleration Metrics](chapter4_AccMetrics.html)
+- Read the previous chapter: [Chapter 4: From Raw Data to Acceleration Metrics](chapter4_AccMetrics.html)
 
 
 **Key terms:** <abbr title="The process of excluding recording segments outside the intended wear period based on study protocol knowledge">data masking</abbr>, <abbr title="An accelerometer recording for one participant across the study wear period">recording</abbr>
-— see the [full Glossary](Glossary.html) for all definitions.
+– see the [full Glossary](Glossary.html) for all definitions.
 
 </div>
 
@@ -121,7 +121,7 @@ Use `data_masking_strategy` (values 1–5) to match GGIR’s analysis window to 
 
 ### What to read next
 
-➡ [Chapter 6 — How GGIR Deals with Invalid Data](chapter6_DataImputation.html)
+➡ [Chapter 6: How GGIR Deals with Invalid Data](chapter6_DataImputation.html)
 
 ### Related materials
 

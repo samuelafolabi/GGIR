@@ -26,11 +26,11 @@ knitr::opts_chunk$set(
 
 **Prerequisites**
 
-- Read the previous chapter: [Chapter 2 — The GGIR pipeline](chapter2_Pipeline.html)
+- Read the previous chapter: [Chapter 2: The GGIR pipeline](chapter2_Pipeline.html)
 
 
 **Key terms:** <abbr title="An algorithm that uses non-movement periods in free-living data to estimate and correct sensor calibration errors without requiring a lab experiment">auto-calibration</abbr>, <abbr title="Time periods when the accelerometer was not worn, detected via standard deviation and range of the raw signal over 60-minute windows">non-wear</abbr>, <abbr title="A quality flag applied when acceleration values near or exceed the sensor dynamic range, indicating likely sensor misuse or malfunction">clipping</abbr>, <abbr title="The maximum absolute acceleration a sensor can record; values exceeding 150% trigger a clipping flag">dynamic range</abbr>, <abbr title="A missing or unreadable segment in raw data caused by corrupted blocks or idle sleep mode">time gap</abbr>, <abbr title="The number of data points recorded per second by the sensor (Hz)">sampling rate</abbr>, <abbr title="Calibration performed by the manufacturer prior to shipping, using gravitational acceleration as reference">factory calibration</abbr>, <abbr title="A parameter vector controlling epoch length, non-wear step size, and non-wear window length">windowsizes</abbr>
-— see the [full Glossary](Glossary.html) for all definitions.
+– see the [full Glossary](Glossary.html) for all definitions.
 
 </div>
 
@@ -236,11 +236,11 @@ GGIR performs four data quality steps automatically: time gap detection and impu
 
 ### What to read next
 
-➡ [Chapter 4 — From Raw Data to Acceleration Metrics](chapter4_AccMetrics.html)
+➡ [Chapter 4: From Raw Data to Acceleration Metrics](chapter4_AccMetrics.html)
 
 ### Related materials
 
-- 📄 [van Hees et al. 2014 — auto-calibration paper](https://doi.org/10.1152/japplphysiol.00421.2014)
+- 📄 [van Hees et al. 2014: auto-calibration paper](https://doi.org/10.1152/japplphysiol.00421.2014)
 - 📄 [GGIR Parameters reference](GGIRParameters.html)
 <br>
 <p><em>Video tutorial by Prof. Stuart Fairclough</em></p>

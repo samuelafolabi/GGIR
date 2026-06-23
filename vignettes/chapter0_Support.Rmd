@@ -30,7 +30,7 @@ The website in front of you is the main source of GGIR documentation, which we r
 
 **Prerequisites**
 
-- You have GGIR installed — see [Installation](chapter0_Installation.html)
+- You have GGIR installed – see [Installation](chapter0_Installation.html)
 
 </div>
 

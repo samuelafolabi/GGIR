@@ -26,11 +26,11 @@ knitr::opts_chunk$set(
 
 **Prerequisites**
 
-- None — this is the conceptual starting point for new users.
+- None – this is the conceptual starting point for new users.
 
 
-**Key terms:** <abbr title="Euclidean Norm Minus One — the default acceleration metric in GGIR, computed as vector magnitude minus 1g with negatives rounded to 0">ENMO</abbr>, <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised into a metric value">epoch</abbr>, <abbr title="Acceleration data stored in gravitational units at the native sampling rate of the sensor, as opposed to proprietary count units">raw accelerometer data</abbr>, <abbr title="Intermediate RData files saved between GGIR pipeline parts to allow resuming without re-running earlier steps">milestone data</abbr>, <abbr title="The six sequential computational stages of the GGIR pipeline (parts 1–6)">Parts (GGIR pipeline)</abbr>
-— see the [full Glossary](Glossary.html) for all definitions.
+**Key terms:** <abbr title="Euclidean Norm Minus One – the default acceleration metric in GGIR, computed as vector magnitude minus 1g with negatives rounded to 0">ENMO</abbr>, <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised into a metric value">epoch</abbr>, <abbr title="Acceleration data stored in gravitational units at the native sampling rate of the sensor, as opposed to proprietary count units">raw accelerometer data</abbr>, <abbr title="Intermediate RData files saved between GGIR pipeline parts to allow resuming without re-running earlier steps">milestone data</abbr>, <abbr title="The six sequential computational stages of the GGIR pipeline (parts 1–6)">Parts (GGIR pipeline)</abbr>
+– see the [full Glossary](Glossary.html) for all definitions.
 
 </div>
 
@@ -136,11 +136,11 @@ GGIR is an open-source R package for processing multi-day raw accelerometer data
 
 ### What to read next
 
-➡ [Chapter 2 — The GGIR pipeline](chapter2_Pipeline.html)
+➡ [Chapter 2: The GGIR pipeline](chapter2_Pipeline.html)
 
 ### Related materials
 
-- 📄 [Migueles et al. 2019 — GGIR overview paper](https://doi.org/10.1123/jmpb.2018-0063)
+- 📄 [Migueles et al. 2019: GGIR overview paper](https://doi.org/10.1123/jmpb.2018-0063)
 - 📄 [GGIR Parameters reference](GGIRParameters.html)
 <br>
 <p><em>Video tutorial by Prof. Stuart Fairclough</em></p>

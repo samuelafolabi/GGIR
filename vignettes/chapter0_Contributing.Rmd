@@ -57,15 +57,15 @@ You might not have the coding skills to contribute to the code base of GGIR, and
 
 ### Summary
 
-There are many ways to contribute to GGIR — code, documentation, funding, outreach, and reporting. Every contribution helps sustain this free software.
+There are many ways to contribute to GGIR – code, documentation, funding, outreach, and reporting. Every contribution helps sustain this free software.
 
 ### What to read next
 
-➡ [Chapter 1 — What is GGIR?](chapter1_WhatIsGGIR.html)
+➡ [Chapter 1: What is GGIR?](chapter1_WhatIsGGIR.html)
 
 ### Related materials
 
-- 📹 [Stuart Fairclough — GGIR video tutorial playlist](https://www.youtube.com/watch?v=AbHgJYTyuiA)
+- 📹 [Stuart Fairclough: GGIR video tutorial playlist](https://www.youtube.com/watch?v=AbHgJYTyuiA)
 - 📄 [GGIR contributing guidelines (GitHub)](https://github.com/wadpac/GGIR/blob/main/CONTRIBUTING.md)
 - 🔗 [GGIR GitHub Discussions](https://github.com/wadpac/GGIR/discussions)
 

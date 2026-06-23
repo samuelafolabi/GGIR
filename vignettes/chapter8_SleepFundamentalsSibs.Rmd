@@ -146,15 +146,15 @@ GGIR(
 
 ### Summary
 
-GGIR identifies sleep as Sustained Inactivity Bouts (SIBs) — periods of limited postural change — rather than physiologically defined sleep. The default algorithm (`vanHees2015`) detects periods where the <abbr title="The angle of the sensor z-axis relative to the vertical, used in the vanHees2015 SIB algorithm">z-angle</abbr> does not change by more than 5 degrees for at least 5 minutes. SIBs are then combined with a <abbr title="A method used by GGIR to estimate the candidate main sleep window each night">guider</abbr> window (chapter 9) to form the <abbr title="The time window from sleep onset to the end of the last SIB, representing the main daily sleep episode">SPT</abbr>.
+GGIR identifies sleep as Sustained Inactivity Bouts (SIBs) – periods of limited postural change – rather than physiologically defined sleep. The default algorithm (`vanHees2015`) detects periods where the <abbr title="The angle of the sensor z-axis relative to the vertical, used in the vanHees2015 SIB algorithm">z-angle</abbr> does not change by more than 5 degrees for at least 5 minutes. SIBs are then combined with a <abbr title="A method used by GGIR to estimate the candidate main sleep window each night">guider</abbr> window (chapter 9) to form the <abbr title="The time window from sleep onset to the end of the last SIB, representing the main daily sleep episode">SPT</abbr>.
 
 ### What to read next
 
-➡ [Chapter 9 — Sleep Fundamentals: Guiders](chapter9_SleepFundamentalsGuiders.html)
+➡ [Chapter 9: Sleep Fundamentals: Guiders](chapter9_SleepFundamentalsGuiders.html)
 
 ### Related materials
 
-- 📄 [van Hees et al. 2015 — vanHees2015 algorithm paper](https://doi.org/10.1371/journal.pone.0142533)
+- 📄 [van Hees et al. 2015: vanHees2015 algorithm paper](https://doi.org/10.1371/journal.pone.0142533)
 - 📄 [GGIR Parameters reference](GGIRParameters.html)
 
 - 📹 [Full GGIR tutorial playlist](https://www.youtube.com/watch?v=AbHgJYTyuiA)

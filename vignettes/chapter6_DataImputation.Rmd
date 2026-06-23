@@ -26,11 +26,11 @@ knitr::opts_chunk$set(
 
 **Prerequisites**
 
-- Read the previous chapter: [Chapter 5 — Accounting for Study Protocol](chapter5_StudyProtocol.html)
+- Read the previous chapter: [Chapter 5: Accounting for Study Protocol](chapter5_StudyProtocol.html)
 
 
 **Key terms:** <abbr title="Replacement of invalid epoch values (non-wear, clipping) with estimates from the same time of day on other valid days in the recording">imputation (epoch-level)</abbr>, <abbr title="Time periods when the accelerometer was not worn, detected via standard deviation and range of the raw signal over 60-minute windows">non-wear</abbr>, <abbr title="A quality flag applied when acceleration values near or exceed the sensor dynamic range">clipping</abbr>, <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised into a metric value">epoch</abbr>
-— see the [full Glossary](Glossary.html) for all definitions.
+– see the [full Glossary](Glossary.html) for all definitions.
 
 </div>
 
@@ -91,7 +91,7 @@ Invalid epochs (non-wear, clipping, and masked data from the study protocol) are
 
 ### What to read next
 
-➡ [Chapter 7 — Describing the Data Without Knowing Sleep](chapter7_DescribingDataWithoutKnowingSleep.html)
+➡ [Chapter 7: Describing the Data Without Knowing Sleep](chapter7_DescribingDataWithoutKnowingSleep.html)
 
 ### Related materials
 

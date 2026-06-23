@@ -27,11 +27,11 @@ knitr::opts_chunk$set(
 
 **Prerequisites**
 
-- Read the previous chapter: [Chapter 3 — Data Quality Assurance](chapter3_QualityAssessment.html)
+- Read the previous chapter: [Chapter 3: Data Quality Assurance](chapter3_QualityAssessment.html)
 
 
-**Key terms:** <abbr title="Euclidean Norm Minus One — the default acceleration metric in GGIR, computed as vector magnitude minus 1g with negatives rounded to 0">ENMO</abbr>, <abbr title="Same as ENMO but with a low-pass filter applied before computation, suppressing high-frequency components">LFENMO</abbr>, <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised into a metric value">epoch</abbr>, <abbr title="An acceleration metric counting how many times the band-pass filtered signal crosses zero per epoch, used in 1990s sleep algorithms">zero-crossing count</abbr>, <abbr title="Absolute difference between the Euclidean norm and its epoch-level average; a frequency-based alternative to ENMO">MAD</abbr>, <abbr title="The number of data points recorded per second by the sensor (Hz)">sampling rate</abbr>, <abbr title="A parameter vector controlling epoch length, non-wear step size, and non-wear window length">windowsizes</abbr>
-— see the [full Glossary](Glossary.html) for all definitions.
+**Key terms:** <abbr title="Euclidean Norm Minus One – the default acceleration metric in GGIR, computed as vector magnitude minus 1g with negatives rounded to 0">ENMO</abbr>, <abbr title="Same as ENMO but with a low-pass filter applied before computation, suppressing high-frequency components">LFENMO</abbr>, <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised into a metric value">epoch</abbr>, <abbr title="An acceleration metric counting how many times the band-pass filtered signal crosses zero per epoch, used in 1990s sleep algorithms">zero-crossing count</abbr>, <abbr title="Absolute difference between the Euclidean norm and its epoch-level average; a frequency-based alternative to ENMO">MAD</abbr>, <abbr title="The number of data points recorded per second by the sensor (Hz)">sampling rate</abbr>, <abbr title="A parameter vector controlling epoch length, non-wear step size, and non-wear window length">windowsizes</abbr>
+– see the [full Glossary](Glossary.html) for all definitions.
 
 </div>
 
@@ -120,7 +120,7 @@ All metrics, listed above, that have the letters LF or BF in their name attempt 
 
 ### Why GGIR uses ENMO as a default.
 
-Only one metric can be the default. Acceleration metric <abbr title="Euclidean Norm Minus One — the default acceleration metric in GGIR, computed as vector magnitude minus 1g with negatives rounded to 0">ENMO</abbr> (Euclidean Norm Minus One with negative values rounded to zero) has been the default metric since GGIR was created. In 2013, we investigated different ways of summarising the raw acceleration data ([van Hees et al. PLoS ONE 2013](https://doi.org/10.1371/journal.pone.0061691)).
+Only one metric can be the default. Acceleration metric <abbr title="Euclidean Norm Minus One – the default acceleration metric in GGIR, computed as vector magnitude minus 1g with negatives rounded to 0">ENMO</abbr> (Euclidean Norm Minus One with negative values rounded to zero) has been the default metric since GGIR was created. In 2013, we investigated different ways of summarising the raw acceleration data ([van Hees et al. PLoS ONE 2013](https://doi.org/10.1371/journal.pone.0061691)).
 In short, different metrics exist and there is very little literature to support the superiority of any metric at the time. As long as different studies use different metrics, their findings will not be comparable. Therefore, the choice for metric ENMO has been merely pragmatic. GGIR uses ENMO as default because:
 
 1\.
@@ -234,11 +234,11 @@ GGIR aggregates raw acceleration into epoch-level metrics to enable comparison a
 
 ### What to read next
 
-➡ [Chapter 5 — Accounting for Study Protocol](chapter5_StudyProtocol.html)
+➡ [Chapter 5: Accounting for Study Protocol](chapter5_StudyProtocol.html)
 
 ### Related materials
 
-- 📄 [van Hees et al. 2013 — ENMO validation paper](https://doi.org/10.1371/journal.pone.0061691)
+- 📄 [van Hees et al. 2013: ENMO validation paper](https://doi.org/10.1371/journal.pone.0061691)
 - 📄 [Published cut-points for ENMO](https://wadpac.github.io/GGIR/articles/CutPoints.html)
 
 

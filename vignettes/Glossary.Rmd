@@ -228,7 +228,7 @@ The time window from the start of the first SIB to the end of the last SIB withi
 ### Sleep Regularity Index (SRI) {#glossary-sri}
 A metric quantifying the day-to-day consistency of sleep timing. Documented separately at [SleepRegularityIndex](SleepRegularityIndex.html). See [Chapter 10](chapter10_SleepAnalysis.html).
 
-### SPT window — see [SPT](#glossary-spt)
+### SPT window – see [SPT](#glossary-spt)
 
 ### SSP (Self-Similarity Parameter) {#glossary-ssp}
 The scaling exponent derived from Detrended Fluctuation Analysis. GGIR splits SSP into short-term (SSP_short, time scales ≤ 90 min) and long-term (SSP_long, 120–600 min) components to separate general mobility from circadian patterning. See [Chapter 13](chapter13_CircadianRhythm.html).

@@ -26,11 +26,11 @@ knitr::opts_chunk$set(
 
 **Prerequisites**
 
-- Read the previous chapters: [Chapter 11 — Physical Activity Cut-points](chapter11_DescribingDataCutPoints.html) and [Chapter 12 — Time Use Analysis](chapter12_TimeUseAnalysis.html)
+- Read the previous chapters: [Chapter 11: Physical Activity Cut-points](chapter11_DescribingDataCutPoints.html) and [Chapter 12: Time Use Analysis](chapter12_TimeUseAnalysis.html)
 
 
 **Key terms:** <abbr title="A sequence of consecutive epochs belonging to the same behavioural class (e.g. inactive, active)">fragment</abbr>, <abbr title="Coefficient of Variance, calculated as standard deviation divided by mean of log-transformed fragment lengths">CoV</abbr>, <abbr title="Transition probability from one state to another (e.g., IN2PA, PA2IN)">TP</abbr>, <abbr title="Number of Fragments">NFrag</abbr>, <abbr title="Number of Fragments Per Minute (Fragmentation Index)">NFragPM</abbr>, <abbr title="Measure of inequality in the distribution of fragment durations">Gini index</abbr>, <abbr title="Sleep Period Time">SPT</abbr>
-— see the [full Glossary](Glossary.html) for all definitions.
+– see the [full Glossary](Glossary.html) for all definitions.
 
 </div>
 
@@ -136,8 +136,8 @@ Congratulations! You have completed the core GGIR guide.
 
 ### Related materials
 
-- 📄 [Blikman et al. 2014 — CoV fragmentation metric](https://doi.org/10.1016/j.apmr.2014.08.023)
-- 📄 [Danilevicz et al. 2024 — TP fragmentation metric](https://doi.org/10.1186/s12874-024-02255-w)
+- 📄 [Blikman et al. 2014: CoV fragmentation metric](https://doi.org/10.1016/j.apmr.2014.08.023)
+- 📄 [Danilevicz et al. 2024: TP fragmentation metric](https://doi.org/10.1186/s12874-024-02255-w)
 
 
 </div>

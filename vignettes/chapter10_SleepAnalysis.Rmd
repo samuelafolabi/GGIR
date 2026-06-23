@@ -27,11 +27,11 @@ knitr::opts_chunk$set(
 
 **Prerequisites**
 
-- Read the previous chapters: [Chapter 8 — SIB Detection](chapter8_SleepFundamentalsSibs.html) and [Chapter 9 — Guiders](chapter9_SleepFundamentalsGuiders.html)
+- Read the previous chapters: [Chapter 8: SIB Detection](chapter8_SleepFundamentalsSibs.html) and [Chapter 9: Guiders](chapter9_SleepFundamentalsGuiders.html)
 
 
 **Key terms:** <abbr title="The time window from sleep onset to the end of the last SIB within the guider window, representing the main daily sleep episode">SPT (Sleep Period Time window)</abbr>, <abbr title="The period from going to bed to getting out of bed; used when a sleep log records time in bed">TimeInBed</abbr>, <abbr title="A per-night integer code (0–6) recording the outcome of the sleep detection process">cleaningcode</abbr>, <abbr title="Time spent awake within the SPT after initial sleep onset">WASO</abbr>, <abbr title="A metric quantifying day-to-day consistency of sleep timing; see SleepRegularityIndex article">SRI (Sleep Regularity Index)</abbr>, <abbr title="A method used by GGIR to estimate the candidate main sleep window each night">guider</abbr>, <abbr title="A continuous period of limited body movement used as a proxy for sleep">SIB</abbr>
-— see the [full Glossary](Glossary.html) for all definitions.
+– see the [full Glossary](Glossary.html) for all definitions.
 
 </div>
 
@@ -166,7 +166,7 @@ GGIR part 4 combines the SIB and guider estimates to define the Sleep Period Tim
 
 ### What to read next
 
-➡ [Chapter 11 — Physical Activity: Cut-points](chapter11_DescribingDataCutPoints.html)
+➡ [Chapter 11: Physical Activity: Cut-points](chapter11_DescribingDataCutPoints.html)
 
 ### Related materials
 

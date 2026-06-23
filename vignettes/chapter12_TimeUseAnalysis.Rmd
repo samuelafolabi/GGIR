@@ -27,11 +27,11 @@ knitr::opts_chunk$set(
 
 **Prerequisites**
 
-- Read the previous chapter: [Chapter 11 — Physical Activity: Cut-points](chapter11_DescribingDataCutPoints.html)
+- Read the previous chapter: [Chapter 11: Physical Activity: Cut-points](chapter11_DescribingDataCutPoints.html)
 
 
 **Key terms:** <abbr title="Moderate-to-Vigorous Physical Activity">MVPA</abbr>, <abbr title="Light Physical Activity">LIPA</abbr>, <abbr title="The time window from sleep onset to the end of the last SIB">SPT (Sleep Period Time)</abbr>, <abbr title="A method used by GGIR to estimate the candidate sleep window">guider</abbr>, <abbr title="A sustained period of time in a given behavioural class satisfying criteria">behavioural bout</abbr>, <abbr title="A fixed-length time window over which raw acceleration is summarised">epoch</abbr>, <abbr title="Set of metrics quantifying how frequently behaviour alternates between activity and inactivity">behavioural fragmentation</abbr>
-— see the [full Glossary](Glossary.html) for all definitions.
+– see the [full Glossary](Glossary.html) for all definitions.
 
 </div>
 
@@ -223,7 +223,7 @@ GGIR part 5 builds a unified time series and computes time-use metrics (duration
 
 ### What to read next
 
-➡ [Chapter 13 — Circadian Rhythm Analysis](chapter13_CircadianRhythm.html)
+➡ [Chapter 13: Circadian Rhythm Analysis](chapter13_CircadianRhythm.html)
 
 ### Related materials
 

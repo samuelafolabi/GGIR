@@ -32,7 +32,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 **Prerequisites**
 
-- None — this is the starting point.
+- None – this is the starting point.
 
 </div>
 
@@ -108,7 +108,7 @@ You have installed R, RStudio, and GGIR (and any optional packages you need). Yo
 
 ### What to read next
 
-➡ [Get started — your first GGIR run](chapter0_GetStarted.html)
+➡ [Get started: your first GGIR run](chapter0_GetStarted.html)
 
 ### Related materials
 

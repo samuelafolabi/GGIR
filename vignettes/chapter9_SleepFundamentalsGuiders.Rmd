@@ -29,12 +29,12 @@ knitr::opts_chunk$set(
 
 **Prerequisites**
 
-- Read the previous chapter: [Chapter 8 — Sleep Fundamentals: SIB Detection](chapter8_SleepFundamentalsSibs.html)
-- 📄 [van Hees et al. 2018 — HDCZA algorithm](https://dx.doi.org/10.1038/s41598-018-31266-z)
+- Read the previous chapter: [Chapter 8: Sleep Fundamentals: SIB Detection](chapter8_SleepFundamentalsSibs.html)
+- 📄 [van Hees et al. 2018: HDCZA algorithm](https://dx.doi.org/10.1038/s41598-018-31266-z)
 
 
 **Key terms:** <abbr title="A method used by GGIR to estimate the candidate main sleep window each night">guider</abbr>, <abbr title="A guider that identifies the longest period of limited postural change per day as the candidate sleep window; default for wrist-worn data">HDCZA</abbr>, <abbr title="The time window from sleep onset to the end of the last SIB within the guider window">SPT (Sleep Period Time window)</abbr>, <abbr title="The period from going to bed to getting out of bed; used when a sleep log records time in bed rather than SPT">TimeInBed</abbr>, <abbr title="A self-reported diary recording sleep onset and wake-up times; the preferred guider when available">sleep log</abbr>, <abbr title="The GGIR parameter selecting the guider algorithm">HASPT.algo</abbr>, <abbr title="A participant whose main sleep period starts before and ends after noon (e.g., shift worker)">daysleeper</abbr>, <abbr title="An experimental guider for hip-worn devices that detects the longest period with horizontal trunk orientation">HorAngle</abbr>, <abbr title="An experimental guider that detects the longest rest bout; for count data">HLRB</abbr>, <abbr title="A continuous period of limited body movement used as a proxy for sleep">SIB (Sustained Inactivity Bout)</abbr>
-— see the [full Glossary](Glossary.html) for all definitions.
+– see the [full Glossary](Glossary.html) for all definitions.
 
 </div>
 
@@ -323,11 +323,11 @@ GGIR uses a “guider” to identify the candidate main sleep window each night 
 
 ### What to read next
 
-➡ [Chapter 10 — Sleep Analysis](chapter10_SleepAnalysis.html)
+➡ [Chapter 10: Sleep Analysis](chapter10_SleepAnalysis.html)
 
 ### Related materials
 
-- 📄 [van Hees et al. 2018 — HDCZA algorithm](https://dx.doi.org/10.1038/s41598-018-31266-z)
+- 📄 [van Hees et al. 2018: HDCZA algorithm](https://dx.doi.org/10.1038/s41598-018-31266-z)
 - 📄 [GGIR Parameters reference](GGIRParameters.html)
 
 - 📹 [Full GGIR tutorial playlist](https://www.youtube.com/watch?v=AbHgJYTyuiA)
