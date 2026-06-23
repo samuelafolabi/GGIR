@@ -30,9 +30,6 @@ knitr::opts_chunk$set(echo = TRUE)
 - How to install optional dependencies for specific data formats
 - How to install older GGIR versions for reproducibility
 
-**Prerequisites**
-
-- None – this is the starting point.
 
 </div>
 

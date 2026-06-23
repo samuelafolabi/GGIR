@@ -1,4 +1,4 @@
-﻿---
+---
 title: "1. What is GGIR"
 output: rmarkdown::html_vignette
 vignette: >
@@ -24,9 +24,6 @@ knitr::opts_chunk$set(
 - The design philosophy behind GGIR’s algorithms
 - The structure of the documentation and how to navigate it
 
-**Prerequisites**
-
-- None – this is the conceptual starting point for new users.
 
 
 **Key terms:** <abbr title="Euclidean Norm Minus One – the default acceleration metric in GGIR, computed as vector magnitude minus 1g with negatives rounded to 0">ENMO</abbr>, <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised into a metric value">epoch</abbr>, <abbr title="Acceleration data stored in gravitational units at the native sampling rate of the sensor, as opposed to proprietary count units">raw accelerometer data</abbr>, <abbr title="Intermediate RData files saved between GGIR pipeline parts to allow resuming without re-running earlier steps">milestone data</abbr>, <abbr title="The six sequential computational stages of the GGIR pipeline (parts 1–6)">Parts (GGIR pipeline)</abbr>

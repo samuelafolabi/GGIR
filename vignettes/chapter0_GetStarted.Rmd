@@ -33,7 +33,7 @@ knitr::opts_chunk$set(echo = TRUE)
 **Prerequisites**
 
 - R and RStudio installed – see [Installation](chapter0_Installation.html)
-- 📹 [Stuart Fairclough: GGIR video tutorial playlist](https://www.youtube.com/watch?v=AbHgJYTyuiA)
+
 
 </div>
 
