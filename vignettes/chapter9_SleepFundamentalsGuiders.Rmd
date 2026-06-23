@@ -1,4 +1,4 @@
----
+﻿---
 title: "9. Sleep Fundamentals: Guiding sleep detection"
 output: rmarkdown::html_vignette
 vignette: >
@@ -330,7 +330,7 @@ GGIR uses a “guider” to identify the candidate main sleep window each night 
 - 📄 [van Hees et al. 2018: HDCZA algorithm](https://dx.doi.org/10.1038/s41598-018-31266-z)
 - 📄 [GGIR Parameters reference](GGIRParameters.html)
 
-- 📹 [Full GGIR tutorial playlist](https://www.youtube.com/watch?v=AbHgJYTyuiA)
+- 📹 [GGIR tutorial playlist by Prof. Stuart Fairclough](https://www.youtube.com/watch?v=AbHgJYTyuiA)
 
 </div>
 

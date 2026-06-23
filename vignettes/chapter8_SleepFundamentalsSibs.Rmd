@@ -1,4 +1,4 @@
----
+﻿---
 title: "8. Sleep Fundamentals: Sustained Inactivity Bout Detection (SIB)"
 output: rmarkdown::html_vignette
 vignette: >
@@ -157,7 +157,7 @@ GGIR identifies sleep as Sustained Inactivity Bouts (SIBs) – periods of limite
 - 📄 [van Hees et al. 2015: vanHees2015 algorithm paper](https://doi.org/10.1371/journal.pone.0142533)
 - 📄 [GGIR Parameters reference](GGIRParameters.html)
 
-- 📹 [Full GGIR tutorial playlist](https://www.youtube.com/watch?v=AbHgJYTyuiA)
+- 📹 [GGIR tutorial playlist by Prof. Stuart Fairclough](https://www.youtube.com/watch?v=AbHgJYTyuiA)
 
 </div>
 

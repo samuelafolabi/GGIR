@@ -1,4 +1,4 @@
----
+﻿---
 title: "10. Sleep Analysis"
 output: rmarkdown::html_vignette
 vignette: >
@@ -173,7 +173,7 @@ GGIR part 4 combines the SIB and guider estimates to define the Sleep Period Tim
 - 📄 [Sleep Regularity Index](SleepRegularityIndex.html)
 - 📄 [GGIR Output reference](GGIRoutput.html)
 
-- 📹 [Full GGIR tutorial playlist](https://www.youtube.com/watch?v=AbHgJYTyuiA)
+- 📹 [GGIR tutorial playlist by Prof. Stuart Fairclough](https://www.youtube.com/watch?v=AbHgJYTyuiA)
 
 </div>
 

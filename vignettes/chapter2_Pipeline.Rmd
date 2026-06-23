@@ -1,4 +1,4 @@
----
+﻿---
 title: "2. The GGIR pipeline"
 output: rmarkdown::html_vignette
 vignette: >
@@ -482,7 +482,7 @@ The GGIR pipeline consists of six sequential parts. A single `GGIR()` call with 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 4px; margin-bottom: 1.5rem;">
   <iframe data-external="1" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/kbCU5uEif34?si=obvs5J48ud7eKao6" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div>
-- 📹 [Full GGIR tutorial playlist](https://www.youtube.com/watch?v=AbHgJYTyuiA)
+- 📹 [GGIR tutorial playlist by Prof. Stuart Fairclough](https://www.youtube.com/watch?v=AbHgJYTyuiA)
 
 </div>
 
