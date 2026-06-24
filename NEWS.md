@@ -4,6 +4,10 @@
 
 - Part 1: Fixed an issue in g.calibrate() where large data chunks caused out-of-bounds errors (#1513)
 
+- Documentation:
+ - Make each chapter more readable as a stand-alone tutorial (#1517)
+
+
 # CHANGES IN GGIR VERSION 3.3-7
 
 - Functionality added to save all key output to one parquet file per person. #1460
