@@ -5,7 +5,7 @@
 - Part 1: Fixed an issue in g.calibrate() where large data chunks caused out-of-bounds errors (#1513)
 
 - Documentation:
- - Make each chapter more readable as a stand-alone tutorial (#1517)
+ - Made each chapter more readable as a stand-alone tutorial (#1517)
 
 
 # CHANGES IN GGIR VERSION 3.3-7
